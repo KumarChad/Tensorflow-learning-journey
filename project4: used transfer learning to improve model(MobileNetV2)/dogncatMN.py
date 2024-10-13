@@ -42,7 +42,7 @@ from tensorflow.keras.preprocessing import image_dataset_from_directory
 # trainbatch = traineg.cache().shuffle(buffer_size=1000).batch(32).prefetch(tf.data.AUTOTUNE)
 # validbatch = valideg.cache().batch(32).prefetch(tf.data.AUTOTUNE)
 
-#test 1 for splitting data
+#test 2 for splitting data
 _URL = 'https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip'
 zip_dir = tf.keras.utils.get_file('cats_and_dogs_filtered.zip',origin=_URL, extract=True)
 
@@ -91,7 +91,7 @@ validgen = validimg.flow_from_directory(batch_size=bsize,
                                         class_mode='binary')
 
 
-#test 2
+#test 2: tried to use a method where hub.keraslayer was not directly part of the sequential api
 # URL = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/feature_vector/4'
 # featureext = hub.KerasLayer(URL, input_shape=(imgres,imgres,3))
 # featureext.trainable =False
@@ -101,6 +101,7 @@ validgen = validimg.flow_from_directory(batch_size=bsize,
 #     layers.Dense(2, activation='sigmoid')
 # ])
 
+#test 3: defined a custom model directly
 # feature_ext = hub.load('https://tfhub.dev/google/tf2-preview/mobilenet_v2/feature_vector/4')
 
 # def extract_feature(imagebatch):
@@ -120,7 +121,7 @@ validgen = validimg.flow_from_directory(batch_size=bsize,
 
 # model.build(input_shape=(None,224,224,3))
 
-#test 3
+#test 4:using a different method again to define a model
 base_model = tf.keras.applications.MobileNetV2(input_shape=(224,224,3), include_top=False, weights='imagenet')
 base_model.trainable = False
 
@@ -137,7 +138,9 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']
 epochs = 2
 histroy = model.fit(traingen, epochs=epochs, validation_data=validgen)
 
-t = time.time()
+#uncomment this piece of code to save the model in .h5 format for export
+#t = time.time()
+
 # export_path_keras = './{}.h5'.format(int (t))
 # print(export_path_keras)
 
